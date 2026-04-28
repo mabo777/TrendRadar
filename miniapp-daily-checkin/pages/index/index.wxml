@@ -1,0 +1,64 @@
+<view class="container">
+  <view class="card">
+    <view class="title">今日打卡（{{today}}）</view>
+    <view class="desc">连续打卡 <text class="highlight">{{streak}}</text> 天</view>
+    <view class="desc" wx:if="{{openid}}">用户标识：{{openid}}</view>
+
+    <view class="add-row">
+      <input
+        class="task-input"
+        placeholder="输入事项，例如：阅读 30 分钟"
+        value="{{newTaskTitle}}"
+        bindinput="onInputTask"
+      />
+      <button class="add-btn" bindtap="addTask">添加</button>
+    </view>
+  </view>
+
+  <view class="card">
+    <view class="sub-title">提醒设置</view>
+    <view class="desc">状态：{{reminder.enabled ? '已开启' : '未开启'}}（{{reminder.time}}）</view>
+    <button class="add-btn" bindtap="requestReminderPermission">订阅打卡提醒</button>
+  </view>
+
+  <view class="card" wx:if="{{tasks.length}}">
+    <view class="sub-title">事项列表</view>
+    <block wx:for="{{tasks}}" wx:key="id">
+      <view class="task-item">
+        <view class="check-btn {{item.completed ? 'checked' : ''}}" data-id="{{item.id}}" bindtap="toggleTask">
+          {{item.completed ? '✓' : ''}}
+        </view>
+        <view class="task-content">
+          <view class="task-title {{item.completed ? 'done' : ''}}">{{item.title}}</view>
+          <view class="task-meta">今日已打卡：{{item.lastCheckinDate === today ? '是' : '否'}}</view>
+        </view>
+        <button class="delete-btn" data-id="{{item.id}}" bindtap="deleteTask">删除</button>
+      </view>
+    </block>
+  </view>
+
+  <view class="card empty" wx:else>
+    暂无事项，先添加一个开始打卡吧 ✨
+  </view>
+
+  <view class="card">
+    <view class="sub-title">月度日历（{{monthLabel}}）</view>
+    <view class="desc">本月完成率：<text class="highlight">{{monthCompletionRate}}%</text></view>
+    <view class="week-grid">
+      <text class="week-day">日</text>
+      <text class="week-day">一</text>
+      <text class="week-day">二</text>
+      <text class="week-day">三</text>
+      <text class="week-day">四</text>
+      <text class="week-day">五</text>
+      <text class="week-day">六</text>
+    </view>
+    <view class="calendar-grid">
+      <block wx:for="{{calendarDays}}" wx:key="key">
+        <view class="calendar-item {{item.checked ? 'calendar-checked' : ''}} {{item.isBlank ? 'calendar-blank' : ''}}">
+          {{item.day}}
+        </view>
+      </block>
+    </view>
+  </view>
+</view>
