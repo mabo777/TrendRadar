@@ -12,6 +12,37 @@
 - 云函数后端（含基础参数校验）
 - 按 `_openid` 一人一档
 
+## 一键导入微信开发者工具
+
+### 方式 A（推荐，真正一键）
+
+> 适用于 macOS，且你已安装微信开发者工具。
+
+1. 打开终端进入项目目录：
+   ```bash
+   cd miniapp-daily-checkin
+   ```
+2. 执行脚本：
+   ```bash
+   ./open-in-devtools.sh
+   ```
+3. 脚本会调用微信开发者工具 CLI 自动打开项目。
+
+如果你的 CLI 路径不是默认值，可手动传参：
+
+```bash
+./open-in-devtools.sh /Applications/wechatwebdevtools.app/Contents/MacOS/cli
+```
+
+### 方式 B（手动导入）
+
+1. 打开微信开发者工具。
+2. 选择「导入项目」。
+3. 选择目录：`miniapp-daily-checkin`。
+4. AppID 可先使用测试号，后续改成你自己的小程序 AppID。
+
+> 已提供 `project.config.json`（含 `miniprogramRoot` 和 `cloudfunctionRoot`），导入后会自动识别小程序与云函数目录。
+
 ## 目录结构
 
 ```text
@@ -19,6 +50,8 @@ miniapp-daily-checkin/
 ├── app.js
 ├── app.json
 ├── app.wxss
+├── project.config.json
+├── open-in-devtools.sh
 ├── sitemap.json
 ├── utils/
 │   └── date.js
@@ -35,14 +68,6 @@ miniapp-daily-checkin/
         ├── index.wxml
         └── index.wxss
 ```
-
-## 快速使用
-
-1. 打开微信开发者工具并导入 `miniapp-daily-checkin`。
-2. 在 `app.js` 填写你的云环境 ID：`cloudEnvId`。
-3. 在 `app.js` 填写订阅消息模板 ID：`templateIds`。
-4. 右键 `cloudfunctions/login`、`cloudfunctions/profile` 分别「上传并部署：云端安装依赖」。
-5. 编译运行。
 
 ## 云开发配置说明
 
