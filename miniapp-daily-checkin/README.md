@@ -14,7 +14,30 @@
 
 ## 一键导入微信开发者工具
 
-### 方式 A（推荐，真正一键）
+### 方式 A（Windows 一键）
+
+1. 打开 `cmd`，进入项目目录：
+   ```bat
+   cd miniapp-daily-checkin
+   ```
+2. 直接执行：
+   ```bat
+   open-in-devtools.bat
+   ```
+
+默认会尝试这个 CLI 路径：
+
+```text
+C:\Program Files (x86)\Tencent\微信web开发者工具\cli.bat
+```
+
+如果你的路径不同，可传入参数：
+
+```bat
+open-in-devtools.bat "D:\wechat-devtools\cli.bat"
+```
+
+### 方式 B（macOS 一键）
 
 > 适用于 macOS，且你已安装微信开发者工具。
 
@@ -26,15 +49,14 @@
    ```bash
    ./open-in-devtools.sh
    ```
-3. 脚本会调用微信开发者工具 CLI 自动打开项目。
 
-如果你的 CLI 路径不是默认值，可手动传参：
+如果 CLI 路径不是默认值，可手动传参：
 
 ```bash
 ./open-in-devtools.sh /Applications/wechatwebdevtools.app/Contents/MacOS/cli
 ```
 
-### 方式 B（手动导入）
+### 方式 C（手动导入）
 
 1. 打开微信开发者工具。
 2. 选择「导入项目」。
@@ -52,6 +74,7 @@ miniapp-daily-checkin/
 ├── app.wxss
 ├── project.config.json
 ├── open-in-devtools.sh
+├── open-in-devtools.bat
 ├── sitemap.json
 ├── utils/
 │   └── date.js
