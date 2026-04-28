@@ -1,0 +1,36 @@
+<view class="container">
+  <view class="card">
+    <view class="title">今日打卡（{{today}}）</view>
+    <view class="desc">连续打卡 <text class="highlight">{{streak}}</text> 天</view>
+
+    <view class="add-row">
+      <input
+        class="task-input"
+        placeholder="输入事项，例如：阅读 30 分钟"
+        value="{{newTaskTitle}}"
+        bindinput="onInputTask"
+      />
+      <button class="add-btn" bindtap="addTask">添加</button>
+    </view>
+  </view>
+
+  <view class="card" wx:if="{{tasks.length}}">
+    <view class="sub-title">事项列表</view>
+    <block wx:for="{{tasks}}" wx:key="id">
+      <view class="task-item">
+        <view class="check-btn {{item.completed ? 'checked' : ''}}" data-id="{{item.id}}" bindtap="toggleTask">
+          {{item.completed ? '✓' : ''}}
+        </view>
+        <view class="task-content">
+          <view class="task-title {{item.completed ? 'done' : ''}}">{{item.title}}</view>
+          <view class="task-meta">今日已打卡：{{item.lastCheckinDate === today ? '是' : '否'}}</view>
+        </view>
+        <button class="delete-btn" data-id="{{item.id}}" bindtap="deleteTask">删除</button>
+      </view>
+    </block>
+  </view>
+
+  <view class="card empty" wx:else>
+    暂无事项，先添加一个开始打卡吧 ✨
+  </view>
+</view>
