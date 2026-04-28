@@ -1,13 +1,16 @@
 # 每日事项打卡微信小程序
 
-一个可直接导入微信开发者工具的「每日事项打卡」小程序示例，支持：
+一个可直接导入微信开发者工具的「每日事项打卡」小程序示例，现已支持你要求的“全都要”版本：
 
 - 新增每日事项
 - 勾选/取消当天打卡
 - 删除事项
-- 本地持久化（`wx.setStorageSync`）
-- 微信云开发存储（可选）
-- 连续打卡天数统计（当天全部事项完成时累计）
+- 连续打卡统计
+- 月度打卡日历 + 完成率
+- 订阅消息提醒（授权入口）
+- 本地持久化 + 云开发持久化（可自动回退）
+- 云函数后端（含基础参数校验）
+- 按 `_openid` 一人一档
 
 ## 目录结构
 
@@ -19,6 +22,13 @@ miniapp-daily-checkin/
 ├── sitemap.json
 ├── utils/
 │   └── date.js
+├── cloudfunctions/
+│   ├── login/
+│   │   ├── index.js
+│   │   └── package.json
+│   └── profile/
+│       ├── index.js
+│       └── package.json
 └── pages/
     └── index/
         ├── index.js
@@ -26,31 +36,47 @@ miniapp-daily-checkin/
         └── index.wxss
 ```
 
-## 使用方法
+## 快速使用
 
-1. 打开微信开发者工具。
-2. 选择「导入项目」。
-3. 项目目录选择 `miniapp-daily-checkin`。
-4. AppID 可以先用测试号。
-5. 编译后即可体验。
+1. 打开微信开发者工具并导入 `miniapp-daily-checkin`。
+2. 在 `app.js` 填写你的云环境 ID：`cloudEnvId`。
+3. 在 `app.js` 填写订阅消息模板 ID：`templateIds`。
+4. 右键 `cloudfunctions/login`、`cloudfunctions/profile` 分别「上传并部署：云端安装依赖」。
+5. 编译运行。
 
-## 如何启用微信云开发
+## 云开发配置说明
 
-默认是本地模式（`useCloud: false`）。如果你想使用微信云开发：
+### 1）`app.js`
 
-1. 在微信开发者工具中开通云开发并创建环境。
-2. 修改 `app.js` 中配置：
-   - `useCloud: true`
-   - `cloudEnvId: '你的云环境ID'`
-   - `cloudCollection: 'daily_checkin_profiles'`（可自定义）
-3. 在云数据库中新建对应集合（首次运行也可自动创建文档）。
-4. 重新编译后，数据会走云数据库读写。
+- `useCloud: true`：启用云开发模式
+- `cloudEnvId`：你的云环境 ID
+- `functionNames.login/profile`：云函数名
+- `templateIds`：订阅消息模板 ID 列表
 
-> 说明：当前示例为了简单，默认只维护当前用户第一条文档。后续建议按 `_openid` 做一人一档。
+### 2）云数据库
 
-## 后续可扩展
+- 集合名：`daily_checkin_profiles`
+- 文档结构（示例）：
 
-- 按 `_openid` 分用户存储和查询
-- 事项分类（学习、运动、习惯）
-- 月度打卡日历
-- 打卡提醒订阅消息
+```json
+{
+  "tasks": [{ "id": 1, "title": "阅读", "lastCheckinDate": "2026-04-28" }],
+  "streak": 5,
+  "lastCheckinDate": "2026-04-28",
+  "checkinHistory": ["2026-04-26", "2026-04-27", "2026-04-28"],
+  "reminder": { "enabled": true, "time": "21:00" },
+  "_openid": "用户openid"
+}
+```
+
+## 说明
+
+- 云端数据通过 `profile` 云函数读写，避免前端直接信任写入。
+- `profile` 云函数包含基础 payload 校验（任务数组、streak、提醒字段等）。
+- 页面会展示当前 `openid`，方便调试确认“按人分档”是否生效。
+
+## 后续建议
+
+- 增加 remindTime 选择器并落库。
+- 通过云函数定时触发器发起提醒（可配合服务通知链路）。
+- 增加年度热力图与任务分类统计。
